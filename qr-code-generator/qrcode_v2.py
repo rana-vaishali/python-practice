@@ -1,12 +1,31 @@
 import qrcode
 from pathlib import Path
+from PIL import ImageColor
 
 #function for asking user input
 def get_qr_data():
-    user_input_data = input("Enter a URL or text: ")
-    user_input_fill_color = input("Enter a color for QRCode: ").strip() or "black"
-    user_input_back_color = input("Enter a background color for QRCode: ").strip() or "white"
-    return user_input_data,user_input_fill_color,user_input_back_color
+     while True:
+        data = input("Enter a URL or text: ").strip()
+        if not data:
+            print("QR data cannot be blank.")
+            continue
+        return data
+
+# asking for color
+def get_valid_color(prompt):   
+    while True:
+        color = input(prompt).strip()
+        if not color:
+            print("Color cannot be blank.")
+            continue
+        
+        try:
+            ImageColor.getrgb(color)
+            return color
+        except ValueError:
+            print("Enter a valid color")     
+        
+    
 
 # Generate a QR code
 def generate_qr(data, forcolor, backcolor): 
@@ -46,7 +65,9 @@ def get_file_name():
         
 
 
-data,fill_color,back_color = get_qr_data()
+data = get_qr_data()
+fill_color = get_valid_color("Enter a color for QRCode: ")
+back_color = get_valid_color("Enter a background color for QRCode: ")
 img = generate_qr(data,fill_color,back_color)
 final_file_name = get_file_name()
 img.save(f"{final_file_name}.png")
